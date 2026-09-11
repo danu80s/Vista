@@ -1,0 +1,6 @@
+{
+  "name": "VISTA - Visual Intelligence Storytelling & Transformation Architecture",
+  "description": "Generator strategi iklan, storyboard 7 scene dialog podcast/prolog, prompt video AI, caption medsos, dan 10 hook teruji untuk bisnis Anda.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
