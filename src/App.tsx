@@ -41,26 +41,34 @@ export default function App() {
     setErrorMessage(null);
 
     try {
-      const response = await fetch('/api/generate-campaign', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
+  const response = await fetch('/api/generate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataToSend),
+  });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Gagal menghasilkan materi iklan');
-      }
+  const responseText = await response.text();
+  let resultData;
+  
+  try {
+    resultData = JSON.parse(responseText);
+  } catch (e) {
+    throw new Error(`Server error: ${responseText.substring(0, 100)}`);
+  }
 
-      const result: FullCampaignResult = await response.json();
-      setCampaignResult(result);
-    } catch (err: any) {
-      console.error('Generation error:', err);
-      setErrorMessage(err.message || 'Terjadi kesalahan saat memproses data. Silakan coba lagi.');
-    } finally {
-      setIsLoading(false);
+  if (!response.ok) {
+    throw new Error(resultData.error || 'Terjadi kesalahan pada server.');
+  }
+
+  setCampaignResult(resultData);
+} catch (err) {
+  console.error('Generation error:', err);
+  setErrorMessage(err.message || 'Terjadi kesalahan sistem.');
+} finally {
+  setIsLoading(false);
+  }
     }
   };
 
