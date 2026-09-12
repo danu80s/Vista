@@ -34,44 +34,43 @@ export default function App() {
     // Generate initial campaign for Syagha Body Repair on first load
     handleGenerate();
   }, []);
+const handleGenerate = async (customData?: BusinessInput) => {
+  const dataToSend = customData || formData;
+  setIsLoading(true);
+  setErrorMessage(null);
 
-  const handleGenerate = async (customData?: BusinessInput) => {
-    const dataToSend = customData || formData;
-    setIsLoading(true);
-    setErrorMessage(null);
-
-    try {
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(dataToSend),
-  });
-
-  const responseText = await response.text();
-  let resultData;
-  
   try {
-    resultData = JSON.parse(responseText);
-  } catch (e) {
-    throw new Error(`Server error: ${responseText.substring(0, 100)}`);
-  }
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataToSend),
+    });
 
-  if (!response.ok) {
-    throw new Error(resultData.error || 'Terjadi kesalahan pada server.');
-  }
-
-  setCampaignResult(resultData);
-} catch (err) {
-  console.error('Generation error:', err);
-  setErrorMessage(err.message || 'Terjadi kesalahan sistem.');
-} finally {
-  setIsLoading(false);
-  }
+    const responseText = await response.text();
+    let resultData;
+    
+    try {
+      resultData = JSON.parse(responseText);
+    } catch (e) {
+      throw new Error(`Server error: ${responseText.substring(0, 100)}`);
     }
-  };
 
+    if (!response.ok) {
+      throw new Error(resultData.error || 'Terjadi kesalahan sistem.');
+    }
+
+    setCampaignResult(resultData);
+  } catch (err: any) {
+    console.error('Generation error:', err);
+    setErrorMessage(err.message || 'Terjadi kesalahan sistem.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+  const handleGenerate = async (customData?: BusinessInput) => {
+  
   const handleExportMarkdown = () => {
     if (!campaignResult) return;
 
